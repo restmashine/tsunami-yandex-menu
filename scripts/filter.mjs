@@ -3,6 +3,8 @@ export const SOURCE='https://tsunami.rest/tstore/yml/d66e7f2e6e4622c922bcaeef0a2
 const FOOD=new Set(['Роллы','Закуски','Салаты','Тако и суши','Супы','Горячее','Ланч','Десерты','Б/А напитки']);
 const SAFE_SEASONAL=new Set(['Рохан Б/А']);
 const DESCRIPTIONS={
+ 'Мясо':'Мясной ланч: рамен с говяжьей грудинкой, гунканы с омлетом тамаго и гёдза с томлёной говядиной. По будням с 13:00 до 17:00.',
+ 'Лепешка роти с гуакамоле':'Лепёшка роти с гуакамоле, томатами и кинзой.',
  'Сан-Себастьян':'Баскский чизкейк с маком, солёной карамелью и кокосовым ганашем. Подаётся со свежим инжиром.',
  'Сет тако':'Четыре вида открытых суши в формате тако для компании: угорь с шиитаке, лосось спайси, краб и гребешок с манго.',
  'Рыба':'Рыбный ланч: гунканы с угрём и омлетом тамаго, гёдза с крабом и рыбой, суп суимоно с морепродуктами и вешенками. По будням с 13:00 до 17:00.',
@@ -35,7 +37,7 @@ export function filterFeed(source){
   const price=Number(plain(field(body,'price'))),url=plain(field(body,'url'));
   if(!id||!name||!cats.has(categoryId)||!Number.isFinite(price)||price<=0||attr(m[1],'available')==='false'){stats.excluded_invalid++;continue;}
   let description=plain(field(body,'description'));
-  if(!description&&DESCRIPTIONS[name]){description=DESCRIPTIONS[name];stats.description_fallback++;}
+  if((!description||/^(Состав:|Пищевая ценность)/i.test(description))&&DESCRIPTIONS[name]){description=DESCRIPTIONS[name];stats.description_fallback++;}
   // The detailed site description is used, not the nutrition/composition field.
   offers.push(`<offer id="${esc(id)}" available="true"><name>${esc(name)}</name><description>${esc(description.slice(0,3000))}</description><price>${price.toFixed(2)}</price><currencyId>RUR</currencyId><categoryId>${esc(categoryId)}</categoryId>${pictures.slice(0,10).map(p=>'<picture>'+esc(p)+'</picture>').join('')}${/^https?:\/\//.test(url)?'<url>'+esc(url)+'</url>':''}</offer>`);
   used.add(categoryId);stats.included++;
