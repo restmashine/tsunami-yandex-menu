@@ -39,13 +39,13 @@ export function filterFeed(source){
   let description=plain(field(body,'description'));
   if((!description||/^(Состав:|Пищевая ценность)/i.test(description))&&DESCRIPTIONS[name]){description=DESCRIPTIONS[name];stats.description_fallback++;}
   // The detailed site description is used, not the nutrition/composition field.
-  offers.push(`<offer id="${esc(id)}" available="true"><name>${esc(name)}</name><description>${esc(description.slice(0,3000))}</description><price>${price.toFixed(2)}</price><currencyId>RUR</currencyId><categoryId>${esc(categoryId)}</categoryId>${pictures.slice(0,1).map(p=>'<picture>'+esc(p)+'</picture>').join('')}${/^https?:\/\//.test(url)?'<url>'+esc(url)+'</url>':''}</offer>`);
+  offers.push(`<offer id="${esc(id)}" available="true"><name>${esc(name)}</name><vendor>Цунами</vendor><description>${esc(description.slice(0,3000))}</description><price>${price.toFixed(2)}</price><currencyId>RUB</currencyId><categoryId>${esc(categoryId)}</categoryId>${pictures.slice(0,1).map(p=>'<picture>'+esc(p)+'</picture>').join('')}${/^https?:\/\//.test(url)?'<url>'+esc(url)+'</url>':''}</offer>`);
   used.add(categoryId);stats.included++;
  }
  if(!offers.length)throw Error('No eligible offers; refusing an empty replacement');
  for(const id of [...used]){let p=cats.get(id)?.parent;const seen=new Set();while(p&&cats.has(p)&&!seen.has(p)){seen.add(p);used.add(p);p=cats.get(p).parent;}}
  const categoryXml=[...cats.values()].filter(c=>used.has(c.id)).map(c=>`<category id="${esc(c.id)}"${c.parent&&used.has(c.parent)?' parentId="'+esc(c.parent)+'"':''}>${esc(c.name)}</category>`).join('');
  const date=source.match(/<yml_catalog\b[^>]*\bdate="([^"]+)"/)?.[1]||new Date().toISOString();
- const xml=`<?xml version="1.0" encoding="UTF-8"?><yml_catalog date="${esc(date)}"><shop><name>Цунами</name><company>Цунами — ресторанное меню</company><url>https://tsunami.rest/qr</url><currencies><currency id="RUR" rate="1"/></currencies><categories>${categoryXml}</categories><offers>${offers.join('')}</offers></shop></yml_catalog>`;
+ const xml=`<?xml version="1.0" encoding="UTF-8"?><yml_catalog date="${esc(date)}"><shop><name>Цунами</name><company>Цунами — ресторанное меню</company><url>https://tsunami.rest/qr</url><currencies><currency id="RUB" rate="1"/></currencies><categories>${categoryXml}</categories><offers>${offers.join('')}</offers></shop></yml_catalog>`;
  return {xml,stats};
 }
