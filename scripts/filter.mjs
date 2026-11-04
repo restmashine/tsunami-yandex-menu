@@ -39,7 +39,7 @@ export function filterFeed(source){
   let description=plain(field(body,'description'));
   if((!description||/^(Состав:|Пищевая ценность)/i.test(description))&&DESCRIPTIONS[name]){description=DESCRIPTIONS[name];stats.description_fallback++;}
   // The detailed site description is used, not the nutrition/composition field.
-  offers.push(`<offer id="${esc(id)}" available="true"><name>${esc(name)}</name><description>${esc(description.slice(0,3000))}</description><price>${price.toFixed(2)}</price><currencyId>RUR</currencyId><categoryId>${esc(categoryId)}</categoryId>${pictures.slice(0,10).map(p=>'<picture>'+esc(p)+'</picture>').join('')}${/^https?:\/\//.test(url)?'<url>'+esc(url)+'</url>':''}</offer>`);
+  offers.push(`<offer id="${esc(id)}" available="true"><name>${esc(name)}</name><description>${esc(description.slice(0,3000))}</description><price>${price.toFixed(2)}</price><currencyId>RUR</currencyId><categoryId>${esc(categoryId)}</categoryId>${pictures.slice(0,1).map(p=>'<picture>'+esc(p)+'</picture>').join('')}${/^https?:\/\//.test(url)?'<url>'+esc(url)+'</url>':''}</offer>`);
   used.add(categoryId);stats.included++;
  }
  if(!offers.length)throw Error('No eligible offers; refusing an empty replacement');
